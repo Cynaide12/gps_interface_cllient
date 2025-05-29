@@ -1,9 +1,9 @@
 import { Box, Typography, LinearProgress, Chip } from '@mui/material';
 import { observer } from 'mobx-react-lite';
-import { useStore } from '../stores/TrackingStore';
+import trackingStore from '../stores/TrackingStore';
 
 const DeviceStatus = observer(() => {
-  const store = useStore();
+  const store = trackingStore;
   
   return (
     <Box>

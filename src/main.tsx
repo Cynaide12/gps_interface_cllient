@@ -7,7 +7,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { AppProvider, DashboardLayout, type Navigation } from "@toolpad/core";
-import { Dashboard } from "@mui/icons-material";
+import { Dashboard, Settings } from "@mui/icons-material";
 
 const NAVIGATION: Navigation = [
   {
@@ -16,8 +16,13 @@ const NAVIGATION: Navigation = [
   },
   {
     segment: 'dashboard',
-    title: 'Dashboard',
+    title: 'Карта',
     icon: <Dashboard />,
+  },
+    {
+    segment: 'dashboard',
+    title: 'Настройки',
+    icon: <Settings />,
   }
 ];
 

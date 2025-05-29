@@ -2,8 +2,13 @@ import { Box, Typography, Paper } from '@mui/material';
 import DeviceStatus from '../components/DeviceStatus';
 import { PageContainer } from '@toolpad/core';
 import MapView from '../components/Map';
+import { useEffect } from 'react';
+import trackingStore from '../stores/TrackingStore';
 
 export default function Dashboard() {
+  useEffect(() => {
+    trackingStore.initConnection()
+  })
   return (
     <PageContainer>
     <Box>

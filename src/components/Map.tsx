@@ -8,7 +8,8 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../stores/TrackingStore";
+import type { Coordinates } from "../services/types";
+import trackingStore from "../stores/TrackingStore";
 
 // Фикс для иконок маркеров
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -26,21 +27,25 @@ interface MapViewProps {
 }
 
 const MapView = observer(({ style }: MapViewProps) => {
-  const store = useStore();
+  const store = trackingStore
+  
+
 
   // Преобразуем координаты в формат для leaflet
   const currentPosition = store.currentLocation
     ? {
-        lat: store.currentLocation.latitude,
-        lng: store.currentLocation.longitude,
+        lat: store.currentLocation?.Latitude,
+        lng: store.currentLocation?.Longitude,
       }
     : null;
 
   // История координат для линии пути
-  const pathPositions = store.locationHistory.map((coord) => ({
-    lat: coord.latitude,
-    lng: coord.longitude,
+  const pathPositions = store.locationHistory.map((coord: Coordinates) => ({
+    lat: coord?.Latitude || 54.814666,
+    lng: coord?.Longitude || 56.132894,
   }));
+
+  console.log(currentPosition)
 
   return (
     <MapContainer
@@ -57,16 +62,16 @@ const MapView = observer(({ style }: MapViewProps) => {
         <Marker position={currentPosition}>
           <Popup>
             <div>
-              <strong>Устройство: {store.currentLocation?.deviceId}</strong>
-              <p>Широта: {store.currentLocation?.latitude.toFixed(6)}</p>
-              <p>Долгота: {store.currentLocation?.longitude.toFixed(6)}</p>
-              <p>Скорость: {store.currentLocation?.speed} км/ч</p>
-              <p>Высота: {store.currentLocation?.altitude} м</p>
-              <p>Спутники: {store.currentLocation?.satellites}</p>
+              <strong>Устройство: {store.currentLocation?.DeviceID}</strong>
+              <p>Широта: {store.currentLocation?.Latitude?.toFixed(6)}</p>
+              <p>Долгота: {store.currentLocation?.Longitude?.toFixed(6)}</p>
+              <p>Скорость: {store.currentLocation?.Speed} км/ч</p>
+              <p>Высота: {store.currentLocation?.Altitude} м</p>
+              <p>Спутники: {store.currentLocation?.Satellites}</p>
               <p>
                 Время:{" "}
                 {new Date(
-                  store.currentLocation?.timestamp || new Date()
+                  store.currentLocation?.Timestamp || new Date()
                 ).toLocaleString()}
               </p>
             </div>

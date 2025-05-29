@@ -1,39 +1,40 @@
 import { makeAutoObservable } from "mobx";
-import { createContext, useContext } from "react";
-
-interface Coordinate {
-  id: number;
-  deviceId: string;
-  latitude: number;
-  longitude: number;
-  speed: number;
-  altitude: number;
-  timestamp: string;
-  satellites: number;
-}
+import { getLastCoordinate } from "../services/coordinateServices";
+import type { Coordinates } from "../services/types";
 
 class TrackingStore {
   isConnected = false;
   lastUpdate: string | null = null;
   batteryLevel = 0;
-  currentLocation: Coordinate | null = null;
-  locationHistory: Coordinate[] = [];
+  currentLocation: Coordinates | null = null;
+  locationHistory: Coordinates[] = [];
 
   constructor() {
     makeAutoObservable(this);
-
-    // Здесь будет инициализация подключения к бэкенду
-    this.initConnection();
   }
 
   initConnection() {
-    // TODO: Реализовать подключение через WebSocket или long polling
+    setInterval(() => {
+      getLastCoordinate().then((data) => {
+        this.updateLocation(data.Coordinates);
+        if (
+          !data.Coordinates ||
+          data?.Coordinates?.ID == this.currentLocation?.ID
+        ) {
+          this.setConnectionStatus(false);
+        } else {
+          this.setConnectionStatus(true);
+        }
+      });
+    }, 10000);
   }
 
-  updateLocation(newCoord: Coordinate) {
+  updateLocation(newCoord: Coordinates) {
     this.currentLocation = newCoord;
-    this.locationHistory = [...this.locationHistory, newCoord].slice(-100); // Храним последние 100 точек
-    this.lastUpdate = new Date().toLocaleTimeString();
+    this.locationHistory = [...this.locationHistory, newCoord].slice(-100);
+    if (newCoord) {
+      this.lastUpdate = new Date().toLocaleTimeString();
+    }
   }
 
   setConnectionStatus(status: boolean) {
@@ -45,8 +46,5 @@ class TrackingStore {
   }
 }
 
-const store = new TrackingStore();
-const StoreContext = createContext(store);
-
-export const useStore = () => useContext(StoreContext);
-export default store;
+const trackingStore = new TrackingStore();
+export default trackingStore;
