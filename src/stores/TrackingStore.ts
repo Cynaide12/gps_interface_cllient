@@ -11,22 +11,27 @@ class TrackingStore {
 
   constructor() {
     makeAutoObservable(this);
+    this.getLastCoordinate()
   }
 
   initConnection() {
     setInterval(() => {
-      getLastCoordinate().then((data) => {
-        this.updateLocation(data.Coordinates);
-        if (
-          !data.Coordinates ||
-          data?.Coordinates?.ID == this.currentLocation?.ID
-        ) {
-          this.setConnectionStatus(false);
-        } else {
-          this.setConnectionStatus(true);
-        }
-      });
+     this.getLastCoordinate();
     }, 10000);
+  }
+
+  async getLastCoordinate() {
+    getLastCoordinate().then((data) => {
+      this.updateLocation(data.Coordinates);
+      if (
+        !data.Coordinates ||
+        data?.Coordinates?.ID == this.currentLocation?.ID
+      ) {
+        this.setConnectionStatus(false);
+      } else {
+        this.setConnectionStatus(true);
+      }
+    });
   }
 
   updateLocation(newCoord: Coordinates) {
