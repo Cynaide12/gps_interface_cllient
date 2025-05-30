@@ -1,5 +1,5 @@
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import Dashboard from './pages/Dashboard';
+import {Dashboard} from './pages/Dashboard';
 
 const theme = createTheme({
   palette: {
