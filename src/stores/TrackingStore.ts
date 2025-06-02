@@ -64,7 +64,7 @@ class TrackingStore {
   async setActiveGeofence(geofence: Geofence) {
     geofence.IsActive = true;
 
-    console.log(geofence)
+    console.log(geofence);
 
     await setActiveGeofence({
       ID: geofence.ID,
@@ -72,10 +72,10 @@ class TrackingStore {
       Longitude: geofence.Longitude,
       Radius: geofence.Radius,
       Name: geofence.Name,
-      IsActive: true
+      IsActive: true,
     });
 
-    await this.loadGeofences()
+    await this.loadGeofences();
   }
 
   // Удаление геозоны
@@ -84,13 +84,13 @@ class TrackingStore {
 
     await deleteGeofence(geofence);
 
-    await this.loadGeofences()
+    await this.loadGeofences();
   }
-
 
   async getLastCoordinate() {
     getLastCoordinate().then((data) => {
-      this.updateLocation(data.Coordinates);
+      console.log(data.Coordinates.ID)
+      console.log(this.currentLocation?.ID)
       if (
         !data.Coordinates ||
         data?.Coordinates?.ID == this.currentLocation?.ID
@@ -99,6 +99,7 @@ class TrackingStore {
       } else {
         this.setConnectionStatus(true);
       }
+      this.updateLocation(data.Coordinates);
     });
   }
 
