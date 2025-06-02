@@ -106,7 +106,7 @@ export const GeofenceSettings = observer(() => {
   const onSubmit: SubmitHandler<GeofenceFormData> = async (data) => {
     const newGeofence = {
       ...data,
-      id: Date.now().toString(),
+      ID: Date.now().toString(),
       isActive: false,
     };
     await trackingStore.addGeofence(newGeofence);
@@ -115,13 +115,13 @@ export const GeofenceSettings = observer(() => {
   };
 
   const handleSetActive = (geofence: Geofence) => {
-    setActiveGeofenceId(geofence.id);
+    setActiveGeofenceId(geofence.ID);
     trackingStore.setActiveGeofence(geofence);
   };
 
   const handleDelete = (geofence: Geofence) => {
     trackingStore.deleteGeofence(geofence);
-    if (activeGeofenceId === geofence.id) {
+    if (activeGeofenceId === geofence.ID) {
       setActiveGeofenceId(null);
     }
   };
@@ -271,7 +271,7 @@ export const GeofenceSettings = observer(() => {
               <List>
                 {trackingStore.geofences.map((geofence) => (
                   <ListItem
-                    key={geofence.id}
+                    key={geofence.ID}
                     secondaryAction={
                       <>
                         <IconButton
