@@ -41,15 +41,16 @@ const MapView = observer(({ style }: MapViewProps) => {
 
   // История координат для линии пути
   const pathPositions = store.locationHistory.map((coord: Coordinates) => ({
-    lat: coord?.Latitude || 54.814666,
-    lng: coord?.Longitude || 56.132894,
+    lat: coord?.Latitude ,
+    lng: coord?.Longitude ,
   }));
 
-  console.log(currentPosition)
+
+  if(!currentPosition) return 
 
   return (
     <MapContainer
-      center={currentPosition || { lat: 54.814666, lng: 56.132894 }} // Москва по умолчанию
+      center={currentPosition}
       zoom={15}
       style={{ height: "100%", width: "100%", ...style }}
     >

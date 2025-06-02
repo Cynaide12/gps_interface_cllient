@@ -12,3 +12,20 @@ export interface Coordinates {
 export interface CoordinatesResponse {
   Coordinates: Coordinates;
 }
+
+export interface Geofence {
+  ID: string;
+  Name: string;
+  Latitude: number;
+  Longitude: number;
+  Radius: number;
+  IsActive?: boolean;
+}
+
+export interface GeofenceResponse {
+  Geofences: Geofence;
+}
+
+export interface GeofencesResponse {
+  Geofences: Geofence[];
+}

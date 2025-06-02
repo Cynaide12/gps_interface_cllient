@@ -6,32 +6,23 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import { AppProvider, DashboardLayout, type Navigation } from "@toolpad/core";
-import { Dashboard, Settings } from "@mui/icons-material";
+import { GeofenceSettings } from "./pages/GeofanceSettings";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Dashboard } from "./pages/Dashboard";
 
-const NAVIGATION: Navigation = [
+const router = createBrowserRouter([
   {
-    kind: 'header',
-    title: 'Main items',
+    element: <App />,
+    children: [
+      { path: "*", element: <Dashboard /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "geofence", element: <GeofenceSettings /> },
+    ],
   },
-  {
-    segment: 'dashboard',
-    title: 'Карта',
-    icon: <Dashboard />,
-  },
-    {
-    segment: 'dashboard',
-    title: 'Настройки',
-    icon: <Settings />,
-  }
-];
+]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AppProvider navigation={NAVIGATION}>
-      <DashboardLayout>
-      <App />
-      </DashboardLayout>
-    </AppProvider>
+    <RouterProvider router={router} />
   </StrictMode>
 );

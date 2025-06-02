@@ -10,7 +10,6 @@ export const Dashboard = observer(() => {
   useEffect(() => {
     trackingStore.initConnection();
   });
-  console.log(import.meta.env.VITE_API_BASE_URL);
   return (
     <PageContainer>
       <Box>
