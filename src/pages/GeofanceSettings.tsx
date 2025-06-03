@@ -107,6 +107,7 @@ export const GeofenceSettings = observer(() => {
     const newGeofence = {
       ...data,
       ID: Date.now().toString(),
+      Radius: +data.Radius,
       isActive: false,
     };
     await trackingStore.addGeofence(newGeofence);
