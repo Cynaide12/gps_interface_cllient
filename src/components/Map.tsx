@@ -11,7 +11,6 @@ import { observer } from "mobx-react-lite";
 import type { Coordinates } from "../services/types";
 import trackingStore from "../stores/TrackingStore";
 
-// Фикс для иконок маркеров
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -27,11 +26,8 @@ interface MapViewProps {
 }
 
 const MapView = observer(({ style }: MapViewProps) => {
-  const store = trackingStore
-  
+  const store = trackingStore;
 
-
-  // Преобразуем координаты в формат для leaflet
   const currentPosition = store.currentLocation
     ? {
         lat: store.currentLocation?.Latitude,
@@ -39,14 +35,12 @@ const MapView = observer(({ style }: MapViewProps) => {
       }
     : null;
 
-  // История координат для линии пути
   const pathPositions = store.locationHistory.map((coord: Coordinates) => ({
-    lat: coord?.Latitude ,
-    lng: coord?.Longitude ,
+    lat: coord?.Latitude,
+    lng: coord?.Longitude,
   }));
 
-
-  if(!currentPosition) return 
+  if (!currentPosition) return;
 
   return (
     <MapContainer

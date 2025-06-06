@@ -16,6 +16,7 @@ export const addGeofence = async (data: {
   return response.data;
 };
 
+
 export const deleteGeofence = async (data: {
   Latitude: number;
   Longitude: number;
@@ -27,7 +28,7 @@ export const deleteGeofence = async (data: {
 };
 
 export const updateGeofence = async (data: {
-  ID: string;
+  ID: number;
   Latitude: number;
   Longitude: number;
   Radius: number;

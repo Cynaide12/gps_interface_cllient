@@ -11,6 +11,8 @@ export interface Coordinates {
 
 export interface CoordinatesResponse {
   Coordinates: Coordinates;
+  is_inside_geofence: boolean;
+  is_online: boolean;
 }
 
 export interface Geofence {

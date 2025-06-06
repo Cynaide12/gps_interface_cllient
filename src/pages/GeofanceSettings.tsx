@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemText,
   IconButton,
+  ButtonGroup,
 } from "@mui/material";
 import { PageContainer } from "@toolpad/core";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -26,8 +27,10 @@ import useAreaSelect from "../hooks/useMapAreaSelect";
 // import "leaflet-area-select";
 import L from "leaflet";
 import { Geofence } from "src/services/types";
+import { Edit } from "@mui/icons-material";
 
 interface GeofenceFormData {
+  ID: string;
   Latitude: number;
   Longitude: number;
   Radius: number;
@@ -57,6 +60,10 @@ export const GeofenceSettings = observer(() => {
     },
   });
 
+  const [editableGeofence, setEditableGeofence] = useState<Geofence | null>(
+    null
+  );
+
   const [mapCenter] = useState<[number, number]>([
     currentLocation?.Latitude || 55.751244,
     currentLocation?.Longitude || 37.618423,
@@ -80,8 +87,6 @@ export const GeofenceSettings = observer(() => {
       methods.setValue("Latitude", center.lat);
       methods.setValue("Longitude", center.lng);
       methods.setValue("Radius", Math.round(radius));
-
-      console.log(123);
     },
     [methods]
   );
@@ -97,7 +102,7 @@ export const GeofenceSettings = observer(() => {
 
   useEffect(() => {
     async function loadGeofences() {
-       trackingStore.initConnection();
+      trackingStore.initConnection();
       await trackingStore.loadGeofences();
     }
     loadGeofences;
@@ -106,11 +111,17 @@ export const GeofenceSettings = observer(() => {
   const onSubmit: SubmitHandler<GeofenceFormData> = async (data) => {
     const newGeofence = {
       ...data,
-      ID: Date.now().toString(),
+      ID: data?.ID?.toString(),
       Radius: +data.Radius,
       isActive: false,
     };
-    await trackingStore.addGeofence(newGeofence);
+    if (editableGeofence && data.ID) {
+      //@ts-ignore
+      data.ID = Number(data.ID)
+      await trackingStore.updateGeofence(newGeofence);
+    } else {
+      await trackingStore.addGeofence(newGeofence);
+    }
     await trackingStore.loadGeofences();
     reset();
   };
@@ -125,6 +136,15 @@ export const GeofenceSettings = observer(() => {
     if (activeGeofenceId === geofence.ID) {
       setActiveGeofenceId(null);
     }
+  };
+
+  const handleEditGeofence = (geofence: Geofence) => {
+    setEditableGeofence(geofence);
+    methods.setValue("ID", geofence.ID);
+    methods.setValue("Name", geofence.Name);
+    methods.setValue("Latitude", geofence.Latitude);
+    methods.setValue("Longitude", geofence.Longitude);
+    methods.setValue("Radius", geofence.Radius);
   };
 
   const lalitudeWatched = useWatch({
@@ -180,7 +200,7 @@ export const GeofenceSettings = observer(() => {
         >
           <Paper sx={{ p: 3, flex: 1 }}>
             <Typography variant="h6" gutterBottom>
-              Добавить новую геозону
+              {editableGeofence ? "Редактирование геозоны" : "Добавить новую геозону"}
             </Typography>
             <FormProvider {...methods}>
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -274,33 +294,37 @@ export const GeofenceSettings = observer(() => {
                   <ListItem
                     key={geofence.ID}
                     secondaryAction={
-                      <>
+                      <Box >
                         <IconButton
                           edge="end"
                           onClick={() => handleDelete(geofence)}
                         >
                           <DeleteIcon />
                         </IconButton>
-                      </>
+                        <IconButton
+                          edge="end"
+                          onClick={() => handleEditGeofence(geofence)}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </Box>
                     }
+
                   >
                     <ListItemText
                       primary={geofence.Name}
-                      secondary={`${geofence.Latitude}, ${geofence.Longitude} (${geofence.Radius}м)`}
+                      sx={{maxWidth: "250px"}}
+                      secondary={`${geofence.Latitude}, ${geofence.Longitude}  (${geofence.Radius}м)`}
                     />
-                    <Button
-                      variant={
-                        geofence.IsActive
-                          ? "contained"
-                          : "outlined"
-                      }
-                      onClick={() => handleSetActive(geofence)}
-                      sx={{ ml: 2 }}
-                    >
-                      {geofence.IsActive
-                        ? "Активна"
-                        : "Сделать активной"}
-                    </Button>
+                    <ButtonGroup>
+                      <Button
+                        variant={geofence.IsActive ? "contained" : "outlined"}
+                        onClick={() => handleSetActive(geofence)}
+                        // sx={{ ml: 2 }}
+                      >
+                        {geofence.IsActive ? "Активна" : "Сделать активной"}
+                      </Button>
+                    </ButtonGroup>
                   </ListItem>
                 ))}
               </List>

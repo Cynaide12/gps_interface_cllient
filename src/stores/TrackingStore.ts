@@ -11,6 +11,7 @@ import type { Coordinates, Geofence } from "../services/types";
 
 class TrackingStore {
   isConnected = false;
+  IsInsideGeofence = true;
   lastUpdate: string | null = null;
   batteryLevel = 0;
   currentLocation: Coordinates | null = null;
@@ -38,7 +39,7 @@ class TrackingStore {
 
   async updateGeofence(geofence: Geofence) {
     await updateGeofence({
-      ID: geofence.ID,
+      ID: +geofence.ID,
       Latitude: geofence.Latitude,
       Longitude: geofence.Longitude,
       Radius: geofence.Radius,
@@ -64,8 +65,6 @@ class TrackingStore {
   async setActiveGeofence(geofence: Geofence) {
     geofence.IsActive = true;
 
-    console.log(geofence);
-
     await setActiveGeofence({
       ID: geofence.ID,
       Latitude: geofence.Latitude,
@@ -89,15 +88,15 @@ class TrackingStore {
 
   async getLastCoordinate() {
     getLastCoordinate().then((data) => {
-      console.log(data.Coordinates.ID)
-      console.log(this.currentLocation?.ID)
-      if (
-        !data.Coordinates ||
-        data?.Coordinates?.ID == this.currentLocation?.ID
-      ) {
+      if (!data.is_online) {
         this.setConnectionStatus(false);
       } else {
         this.setConnectionStatus(true);
+      }
+      if(!data.is_inside_geofence){
+        this.IsInsideGeofence = false;
+      } else {
+        this.IsInsideGeofence = true;
       }
       this.updateLocation(data.Coordinates);
     });
@@ -121,6 +120,10 @@ class TrackingStore {
 
   get getIsConnected() {
     return this.isConnected;
+  }
+
+  get getIsInsideGeofence() {
+    return this.IsInsideGeofence;
   }
 
   get getCurrentCoordinate() {
