@@ -4,6 +4,7 @@ import { ReactRouterAppProvider } from "@toolpad/core/react-router";
 import { DashboardCustomize, Settings } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
 import { AppLayout } from "./pages/AppLayout";
+import { useBranding } from "./hooks/useBranding";
 
 const theme = createTheme({
   palette: {
@@ -34,9 +35,11 @@ const NAVIGATION: Navigation = [
   },
 ];
 
+  const branding = useBranding()
+
 export default function App() {
   return (
-    <ReactRouterAppProvider navigation={NAVIGATION}>
+    <ReactRouterAppProvider navigation={NAVIGATION} branding={branding}>
       <DashboardLayout>
         <ThemeProvider theme={theme}>
           <CssBaseline />
