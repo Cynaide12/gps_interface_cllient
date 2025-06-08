@@ -113,6 +113,8 @@ export const GeofenceSettings = observer(() => {
       ...data,
       ID: data?.ID?.toString(),
       Radius: +data.Radius,
+      Latitude: +data.Latitude,
+      Longitude: +data.Longitude,
       isActive: false,
     };
     if (editableGeofence && data.ID) {
