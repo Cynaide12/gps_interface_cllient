@@ -13,18 +13,15 @@ export const Dashboard = observer(() => {
   return (
     <PageContainer>
       <Box>
-        <Typography variant="h4" gutterBottom>
-          Ошейник для собак панель управления
-        </Typography>
 
         <Box
           sx={{
             display: "flex",
             gap: 2,
-            flexDirection: { xs: "column", md: "row" },
+            flexWrap: "wrap"
           }}
         >
-          <Paper sx={{ p: 2, flex: 2 }}>
+          <Paper sx={{ p: 2, flex: 2, minHeight: "300px", minWidth: "300px" }}>
             <MapView />
           </Paper>
 

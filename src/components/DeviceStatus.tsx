@@ -19,7 +19,7 @@ const DeviceStatus = observer(() => {
           size="small"
         />
       </Box>
-      {store.getIsConnected && (
+      {store.getIsConnected && store.getActiveGeofence && (
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2">Статус местоположения</Typography>
           <Chip

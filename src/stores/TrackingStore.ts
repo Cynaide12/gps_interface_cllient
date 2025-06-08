@@ -130,6 +130,10 @@ class TrackingStore {
     return this.IsInsideGeofence;
   }
 
+  get getActiveGeofence() {
+    return this.geofences.find((g) => g.IsActive);
+  }
+
   get getCurrentCoordinate() {
     return this.currentLocation;
   }

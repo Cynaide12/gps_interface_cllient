@@ -50,12 +50,12 @@ const MapWithAreaSelect = ({
 };
 
 export const GeofenceSettings = observer(() => {
-  const currentLocation = trackingStore.getCurrentCoordinate;
+  const currentLocation = trackingStore.getActiveGeofence;
   const methods = useForm<GeofenceFormData>({
     defaultValues: {
       Latitude: currentLocation?.Latitude || 55.751244,
       Longitude: currentLocation?.Longitude || 37.618423,
-      Radius: 100,
+      Radius: currentLocation?.Radius,
       Name: "Домашняя зона",
     },
   });
@@ -119,7 +119,7 @@ export const GeofenceSettings = observer(() => {
     };
     if (editableGeofence && data.ID) {
       //@ts-ignore
-      data.ID = Number(data.ID)
+      data.ID = Number(data.ID);
       await trackingStore.updateGeofence(newGeofence);
     } else {
       await trackingStore.addGeofence(newGeofence);
@@ -130,8 +130,11 @@ export const GeofenceSettings = observer(() => {
 
   const handleSetActive = async (geofence: Geofence) => {
     setActiveGeofenceId(geofence.ID);
-   await trackingStore.setActiveGeofence(geofence);
-    await trackingStore.loadGeofences()
+    await trackingStore.setActiveGeofence(geofence);
+    await trackingStore.loadGeofences();
+    methods.setValue("Latitude", geofence.Latitude);
+    methods.setValue("Longitude", geofence.Longitude);
+    methods.setValue("Radius", geofence.Radius);
   };
 
   const handleDelete = (geofence: Geofence) => {
@@ -201,9 +204,11 @@ export const GeofenceSettings = observer(() => {
             flexDirection: { xs: "column", md: "row" },
           }}
         >
-          <Paper sx={{ p: 3, flex: 1 }}>
+          <Paper sx={{ p: 3, flex: 1, flexDirection: { md: "column" } }}>
             <Typography variant="h6" gutterBottom>
-              {editableGeofence ? "Редактирование геозоны" : "Добавить новую геозону"}
+              {editableGeofence
+                ? "Редактирование геозоны"
+                : "Добавить новую геозону"}
             </Typography>
             <FormProvider {...methods}>
               <form onSubmit={handleSubmit(onSubmit)}>
@@ -219,8 +224,9 @@ export const GeofenceSettings = observer(() => {
                     <MapContainer
                       center={mapCenter}
                       zoom={13}
-                      style={{ height: "100%", width: "100%" }}
+                      style={{ height: "100%", width: "100%", minHeight: "200" }}
                       ref={mapRef}
+                      
                     >
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -297,7 +303,7 @@ export const GeofenceSettings = observer(() => {
                   <ListItem
                     key={geofence.ID}
                     secondaryAction={
-                      <Box >
+                      <Box>
                         <IconButton
                           edge="end"
                           onClick={() => handleDelete(geofence)}
@@ -312,11 +318,10 @@ export const GeofenceSettings = observer(() => {
                         </IconButton>
                       </Box>
                     }
-
                   >
                     <ListItemText
                       primary={geofence.Name}
-                      sx={{maxWidth: "250px"}}
+                      sx={{ maxWidth: "250px" }}
                       secondary={`${geofence.Latitude}, ${geofence.Longitude}  (${geofence.Radius}м)`}
                     />
                     <ButtonGroup>
