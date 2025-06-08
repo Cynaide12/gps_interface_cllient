@@ -54,7 +54,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.leaflet-bottom.leaflet-right{
+.leaflet-bottom.leaflet-right div a svg {
   display:none !important
 }
 

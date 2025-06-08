@@ -12,6 +12,7 @@ import { observer } from "mobx-react-lite";
 import type { Coordinates } from "../services/types";
 import trackingStore from "../stores/TrackingStore";
 import useAreaSelect from "..//hooks/useMapAreaSelect";
+import { useEffect } from "react";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -40,6 +41,21 @@ const MapWithAreaSelect = observer(({
 });
 
 const MapView = observer(({ style }: MapViewProps) => {
+
+    useEffect(() => {
+    // Ждём, пока элемент появится в DOM
+    const interval = setInterval(() => {
+      const el = document.querySelector('div.leaflet-bottom.leaflet-right div a svg');
+      if (el) {
+        // Удаляем элемент из DOM
+        el.remove();
+        clearInterval(interval);
+      }
+    }, 500);
+
+    // Очистка интервала при размонтировании компонента
+    return () => clearInterval(interval);
+  }, []);
   const store = trackingStore;
 
   const currentPosition = store.currentLocation

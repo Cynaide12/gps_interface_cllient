@@ -194,6 +194,21 @@ export const GeofenceSettings = observer(() => {
     }
   }, [selection]);
 
+      useEffect(() => {
+      // Ждём, пока элемент появится в DOM
+      const interval = setInterval(() => {
+        const el = document.querySelector('div.leaflet-bottom.leaflet-right div a svg');
+        if (el) {
+          // Удаляем элемент из DOM
+          el.remove();
+          clearInterval(interval);
+        }
+      }, 500);
+  
+      // Очистка интервала при размонтировании компонента
+      return () => clearInterval(interval);
+    }, []);
+
   return (
     <PageContainer>
       <Box>
