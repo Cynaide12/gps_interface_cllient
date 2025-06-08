@@ -19,19 +19,20 @@ const DeviceStatus = observer(() => {
           size="small"
         />
       </Box>
-
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="body2">Статус местоположения</Typography>
-        <Chip
-          label={
-            store.getIsInsideGeofence
-              ? "Ошейник находится в пределах разрешенного радиуса"
-              : "Ошейник находится за пределами разрешенного радиуса"
-          }
-          color={store.getIsInsideGeofence ? "success" : "error"}
-          size="small"
-        />
-      </Box>
+      {store.getIsConnected && (
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="body2">Статус местоположения</Typography>
+          <Chip
+            label={
+              store.getIsInsideGeofence
+                ? "Ошейник находится в пределах разрешенного радиуса"
+                : "Ошейник находится за пределами разрешенного радиуса"
+            }
+            color={store.getIsInsideGeofence ? "success" : "error"}
+            size="small"
+          />
+        </Box>
+      )}
 
       <Box sx={{ mb: 2 }}>
         <Typography variant="body2">Последнее обновление</Typography>

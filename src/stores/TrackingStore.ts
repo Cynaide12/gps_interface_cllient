@@ -118,6 +118,10 @@ class TrackingStore {
     this.batteryLevel = level;
   }
 
+  get getGeofences() {
+    return this.geofences;
+  }
+
   get getIsConnected() {
     return this.isConnected;
   }

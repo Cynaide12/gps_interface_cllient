@@ -126,9 +126,10 @@ export const GeofenceSettings = observer(() => {
     reset();
   };
 
-  const handleSetActive = (geofence: Geofence) => {
+  const handleSetActive = async (geofence: Geofence) => {
     setActiveGeofenceId(geofence.ID);
-    trackingStore.setActiveGeofence(geofence);
+   await trackingStore.setActiveGeofence(geofence);
+    await trackingStore.loadGeofences()
   };
 
   const handleDelete = (geofence: Geofence) => {

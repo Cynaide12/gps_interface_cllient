@@ -4,12 +4,14 @@ import {
   Marker,
   Popup,
   Polyline,
+  useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { observer } from "mobx-react-lite";
 import type { Coordinates } from "../services/types";
 import trackingStore from "../stores/TrackingStore";
+import useAreaSelect from "..//hooks/useMapAreaSelect";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -25,6 +27,18 @@ interface MapViewProps {
   style?: React.CSSProperties;
 }
 
+const MapWithAreaSelect = observer(({
+  onAreaSelect,
+  selection,
+}: {
+  onAreaSelect: (bounds: L.LatLngBounds) => void;
+  selection: { center: [number, number]; radius: number } | null;
+}) => {
+  const map = useMap();
+  useAreaSelect(map, onAreaSelect, selection);
+  return null;
+});
+
 const MapView = observer(({ style }: MapViewProps) => {
   const store = trackingStore;
 
@@ -39,6 +53,8 @@ const MapView = observer(({ style }: MapViewProps) => {
     lat: coord?.Latitude,
     lng: coord?.Longitude,
   }));
+
+  const activeGeofence = store.getGeofences.find((geo) => geo.IsActive);
 
   if (!currentPosition) return;
 
@@ -72,6 +88,13 @@ const MapView = observer(({ style }: MapViewProps) => {
             </div>
           </Popup>
         </Marker>
+      )}
+
+      {activeGeofence && (
+        <MapWithAreaSelect
+          onAreaSelect={() => null}
+          selection={{ center: [activeGeofence.Latitude, activeGeofence.Longitude], radius: activeGeofence.Radius }}
+        />
       )}
 
       {pathPositions.length > 1 && (
